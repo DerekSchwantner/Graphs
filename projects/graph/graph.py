@@ -150,8 +150,8 @@ class Graph:
                 if last_v == destination_vertex:
                     # IF SO, RETURN PATH
                     return p
-                    # Mark it as visited...
-                    visited.add(last_v)
+                # Mark it as visited...
+                visited.add(last_v)
                 # Then add A PATH TO its neighbors to the back of the queue
                 for neighbor in self.vertices[last_v]:
                     # COPY THE PATH
@@ -239,4 +239,3 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     print(graph.dfs(1, 6))
-    print("MVP")

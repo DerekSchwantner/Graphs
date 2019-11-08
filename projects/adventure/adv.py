@@ -19,21 +19,43 @@ world.loadGraph(roomGraph)
 # UNCOMMENT TO VIEW MAP
 world.printRooms()
 
-player = Player("Name", world.startingRoom)
+player = Player("Derek", world.startingRoom)
 
-# Fill this out
-traversalPath = []
+n = 'n'
+s = 's'
+e = 'e'
+w = 'w'
+# Brute force
+# starts at room 0 and ends back at room 0
+initial_four = [n,s,s,w,e,n]
+# going left from room 0 over to 104
+left_from_zero = [w, w, s, w, s, s, n, n, e, n, e, n, w, w, s, n, w, s, s, s]
+# starts at 104, gets to 379, up to 274 back to 104, down to 126 that hits branches to 235 and 180, and back to 149, then covers the lower section getting to branches ending in 410,485,495, 323, 423, 469 and back to 193 to 149
+left_section = [w, n, w, w, w, e, e, e, s, w, w, s, w, n, s, e, n, e, e, e, s, w, w, e, s, w, e, n, e, s, s, s, s, s, s, s, s, w, e, n, e, e, s, s, s, w, e, n, e, w, n, n, w, s, n, w, n, n, n, w, s, w, s, s, w, e, n, w, e, n, e, s, s, n, n, n, e, n, n]
+# starts at 149 and gos left once, then downward to traverse the bottom left corner with branches: 433,310, 450,473,419,494. Back up to 156 where it will expand upward
+bottom_left_corner = [w,s,w,w,w,w,e,s,w,w,e,e,s,s,s,s,s,e,w,n,e,w,n,n,n,w,s,s,s,s,n,w,w,e,e,n,w,e,n,w,e,n,w,w,w,e,e,e,e,n,n,e,e,s,w,s,n,e,n,e,n]
+# starts at 156, goes left and traverses to branches 484, 486, 479, 465, 227, 100, and stops at 92
+mid_left = [w, w, n, s, w, w, w, s, w, s, n, e, n, e, e, n, w, w, n, w, e, s, e, n, n, w, n, w, e, e, n, w, w, e, n, s, e, n, s, e, e, e, n, w, w, e, e, e, s, n]
+# starts at 92 go up & left to branches 301, 447, 397, 297, back to 81 then right to 9 down to 1 then over to 0
+upper_left = [n, w, w, w, w, e, n, n, s, w, w, w, e, s, n, e, n, w, w, w, e, e, e, n, s, s, e, s, e, e, e, n, w, w, e, n, w, e, s, e, s, e, n, s, e, n, s, e, n, s, e, e, e, s, s, w]
+# starts at 0 goes up & right
+top_right = [e, n, n, w, n, w, e, n, n, s, w, n, w, n, s, e, n, n, w, n, s, w, n, w, e, s, e, e, s, s ,s, w, w, n, n, w, n, s, e, s, s, w, n, s, w, n, n, n, n, n, s, s, s, s, w, w, w, e, e, n, n, n, n, w, e, n, n, s, s, s, s, s, w, n, n, s, s, w, n, w, e, n, n, s, s, s, w, w, w, e, s, w, e, n, e, e, e, e, s, e, s, e, e, e, e, e, e, s, n, n, n, w, n, n, w, n, e, w, w, e, s, e, s, s, e, n, e, e, w, w, n, n, e, w, n, w, n, n, s, w, n, s, e, s, w, w, w, s, w, e, n, w, n, s, w, n, s, e, e, e, n, w, n, n, w, e, s, s, e, n, n, n, s, s, s, s, e, e, e, e, n, n, s, s, w, n, n, n, e, n, w, w, e, e, s, e, n, e, e, w, w, s, s, s, s, e, n, n, n, s, s, e, n, n, s, e, n, n, s, e, e, w, s, n, w, s, w, s, w, s, s, e, e, w, n, e, n, s, e, n, s, e, w, w, w, s, w, s, e, w, w, n, s, w, w, s, s, s, s, w, s, s, e, s, e]
+right_s = [e, s, s, s, n, n, e, s, s, e, w, n, e, e, e, e, e, w, w, w, s, e, e, e, w, s, n, w, w, s, s, e, e, w, n, s, w, s, e, e, w, w, s, e, e, w, w, n, n, n, n, n, w, w, n, w, n, e, n, e, e, e, e, e, e, s, n, w, w, w, w, w, n, e, n, e, s, n, e, s, e, e, e, s, n, w, w, w, n, e, e, w, n, e, w, s, w, w, w, n, e, e, n, e, w, s, w, n, n, e, e, e, s, n, w, w, w, s, s, w, s, s, w, s, w, s, e, s, n, e, e, e, w, w, s, e, e, e, n, s, e, w, w, w, w, n, w, w, w, w, n, e, n, e, n, n, n, n, s, s, s, e, n, n, n, s, e, n, n, e, n, s, e, n, s, e, n, s, e, w, w, w, w, s, s, w, s, s, w, s, w, s, w, n, n, n, n, s, s, e, n, n, s, s, w, s, s, s, w, s]
+low_portion = [e, w, s, e, s, n, w, s, w, s, s, s, s, s, s, s, s, s, s, n, n, n, n, n, w, w, s, e, s, s, s, n, n, n, w, s, n, w, s, n, e, n, w, n, s, e, e, n, w, e, n, w, e, n, w, w, s, n, e, e, n, w, e, n, w, e, e, e, s, e, s, s, n, n, e, s, s, s, s, s, e, w, n, n, n, e, s, e, w, s, e, e, e, e, w, w, w, w, n, n, w, n, e, n, e, s, s, n, n, w, s, w, n, w, w, s, s, s, s, n, e, s, s, w, s, s, n, n, e, s, s, s, w, s, n, e, s, s, n, n, n, n, e, s, e, e, s, s, n, n, w, s, s, n, n, w, s, s, n, n, n, e, e, n, e, s, s, n, n, e, e, w, s, s, e, w, s, s]
 
 
+traversalPath = initial_four + left_from_zero + left_section + bottom_left_corner + mid_left + upper_left + top_right + right_s + low_portion
 
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
+print(player.currentRoom.id)
 for move in traversalPath:
     player.travel(move)
     visited_rooms.add(player.currentRoom)
+    print(player.currentRoom)
 
 if len(visited_rooms) == len(roomGraph):
     print(f"TESTS PASSED: {len(traversalPath)} moves, {len(visited_rooms)} rooms visited")
